@@ -22,7 +22,14 @@ export default function Home() {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const constraints = {
+        video: {
+          facingMode: 'environment', // Use back camera
+          width: { ideal: 1920 },
+          height: { ideal: 1080 }
+        }
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setIsStreaming(true);
@@ -88,8 +95,17 @@ export default function Home() {
   };
 
   return (
-    <main className="container">
-      <h1 className="title">Camera OCR & JSON Search</h1>
+    <main style={{
+      padding: '20px',
+      maxWidth: '600px',
+      margin: '0 auto',
+      textAlign: 'center'
+    }}>
+      <h1 style={{
+        fontSize: '24px',
+        marginBottom: '20px',
+        color: '#333'
+      }}>Camera OCR & JSON Search</h1>
       <div className="camera-section">
         <video
           ref={videoRef}
@@ -97,19 +113,68 @@ export default function Home() {
           muted
           playsInline
           className="camera-feed"
+          style={{
+            width: '100%',
+            maxWidth: '400px',
+            height: 'auto',
+            border: '2px solid #ccc',
+            borderRadius: '8px'
+          }}
         />
-        <canvas ref={canvasRef} className="hidden-canvas" />
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
-      <div className="controls">
+      <div className="controls" style={{ 
+        display: 'flex', 
+        gap: '10px', 
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        margin: '20px 0'
+      }}>
         {!isStreaming ? (
-          <button onClick={startCamera}>Start Camera</button>
+          <button 
+            onClick={startCamera}
+            style={{
+              padding: '12px 24px',
+              fontSize: '16px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+          >
+            Start Camera
+          </button>
         ) : (
           <>
-            <button onClick={stopCamera} className="bg-red-500">
+            <button 
+              onClick={stopCamera}
+              style={{
+                padding: '12px 24px',
+                fontSize: '16px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
               Stop Camera
             </button>
-            <button onClick={captureAndRecognize} disabled={loading}>
+            <button 
+              onClick={captureAndRecognize} 
+              disabled={loading}
+              style={{
+                padding: '12px 24px',
+                fontSize: '16px',
+                backgroundColor: loading ? '#6c757d' : '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: loading ? 'not-allowed' : 'pointer'
+              }}
+            >
               {loading ? 'Scanning...' : 'Scan Photo'}
             </button>
           </>
