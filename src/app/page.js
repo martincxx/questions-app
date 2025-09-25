@@ -76,7 +76,7 @@ export default function Home() {
     try {
       const {
         data: { text },
-      } = await Tesseract.recognize(capturedPhoto, 'ru', {
+      } = await Tesseract.recognize(capturedPhoto, 'rus', {
         logger: (m) => console.log(m),
       });
       setOcrText(text);
