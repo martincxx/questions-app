@@ -27,7 +27,7 @@ export default function Home() {
         video: {
           facingMode: 'environment', // Use back camera
           width: { ideal: 1920 },
-          height: { ideal: 400 },
+          height: { ideal: 1080 },
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
