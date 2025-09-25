@@ -27,8 +27,8 @@ export default function Home() {
         video: {
           facingMode: 'environment', // Use back camera
           width: { ideal: 1920 },
-          height: { ideal: 1080 }
-        }
+          height: { ideal: 400 },
+        },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (videoRef.current) {
@@ -108,17 +108,23 @@ export default function Home() {
   };
 
   return (
-    <main style={{
-      padding: '20px',
-      maxWidth: '600px',
-      margin: '0 auto',
-      textAlign: 'center'
-    }}>
-      <h1 style={{
-        fontSize: '24px',
-        marginBottom: '20px',
-        color: '#333'
-      }}>Photo OCR Scanner</h1>
+    <main
+      style={{
+        padding: '20px',
+        maxWidth: '600px',
+        margin: '0 auto',
+        textAlign: 'center',
+      }}
+    >
+      <h1
+        style={{
+          fontSize: '24px',
+          marginBottom: '20px',
+          color: '#333',
+        }}
+      >
+        Photo OCR Scanner
+      </h1>
       <div className="camera-section">
         {!capturedPhoto ? (
           <video
@@ -131,7 +137,7 @@ export default function Home() {
               maxWidth: '400px',
               height: 'auto',
               border: '2px solid #ccc',
-              borderRadius: '8px'
+              borderRadius: '8px',
             }}
           />
         ) : (
@@ -143,23 +149,26 @@ export default function Home() {
               maxWidth: '400px',
               height: 'auto',
               border: '2px solid #28a745',
-              borderRadius: '8px'
+              borderRadius: '8px',
             }}
           />
         )}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
-      <div className="controls" style={{ 
-        display: 'flex', 
-        gap: '10px', 
-        justifyContent: 'center',
-        flexWrap: 'wrap',
-        margin: '20px 0'
-      }}>
+      <div
+        className="controls"
+        style={{
+          display: 'flex',
+          gap: '10px',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          margin: '20px 0',
+        }}
+      >
         {!capturedPhoto ? (
           !isStreaming ? (
-            <button 
+            <button
               onClick={startCamera}
               style={{
                 padding: '12px 24px',
@@ -168,14 +177,14 @@ export default function Home() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Start Camera
             </button>
           ) : (
             <>
-              <button 
+              <button
                 onClick={stopCamera}
                 style={{
                   padding: '12px 24px',
@@ -184,12 +193,12 @@ export default function Home() {
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={takePhoto}
                 style={{
                   padding: '12px 24px',
@@ -198,7 +207,7 @@ export default function Home() {
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Take Photo
@@ -207,7 +216,7 @@ export default function Home() {
           )
         ) : (
           <>
-            <button 
+            <button
               onClick={retakePhoto}
               style={{
                 padding: '12px 24px',
@@ -216,12 +225,12 @@ export default function Home() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Retake
             </button>
-            <button 
+            <button
               onClick={processPhoto}
               disabled={loading}
               style={{
@@ -231,7 +240,7 @@ export default function Home() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
-                cursor: loading ? 'not-allowed' : 'pointer'
+                cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
               {loading ? 'Processing...' : 'Process Photo'}
@@ -241,38 +250,54 @@ export default function Home() {
       </div>
 
       {ocrText && (
-        <div style={{
-          backgroundColor: '#f8f9fa',
-          border: '1px solid #dee2e6',
-          borderRadius: '8px',
-          padding: '20px',
-          margin: '20px 0',
-          textAlign: 'left'
-        }}>
-          <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>Detected Text</h3>
-          <p style={{ 
-            backgroundColor: 'white',
-            padding: '15px',
-            borderRadius: '4px',
-            border: '1px solid #e9ecef',
-            margin: 0,
-            whiteSpace: 'pre-wrap'
-          }}>{ocrText}</p>
+        <div
+          style={{
+            backgroundColor: '#f8f9fa',
+            border: '1px solid #dee2e6',
+            borderRadius: '8px',
+            padding: '20px',
+            margin: '20px 0',
+            textAlign: 'left',
+          }}
+        >
+          <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>
+            Detected Text
+          </h3>
+          <p
+            style={{
+              backgroundColor: 'white',
+              padding: '15px',
+              borderRadius: '4px',
+              border: '1px solid #e9ecef',
+              margin: 0,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {ocrText}
+          </p>
         </div>
       )}
 
       {foundQuestion && (
-        <div style={{
-          backgroundColor: '#d4edda',
-          border: '1px solid #c3e6cb',
-          borderRadius: '8px',
-          padding: '20px',
-          margin: '20px 0',
-          textAlign: 'left'
-        }}>
-          <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>✅ Question Found</h3>
-          <p><strong>ID:</strong> {foundQuestion.id}</p>
-          <p><strong>Question:</strong> {foundQuestion.questionText}</p>
+        <div
+          style={{
+            backgroundColor: '#d4edda',
+            border: '1px solid #c3e6cb',
+            borderRadius: '8px',
+            padding: '20px',
+            margin: '20px 0',
+            textAlign: 'left',
+          }}
+        >
+          <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>
+            ✅ Question Found
+          </h3>
+          <p>
+            <strong>ID:</strong> {foundQuestion.id}
+          </p>
+          <p>
+            <strong>Question:</strong> {foundQuestion.questionText}
+          </p>
           <h4 style={{ margin: '15px 0 10px 0' }}>Answers:</h4>
           <ul style={{ margin: 0, paddingLeft: '20px' }}>
             {foundQuestion.answers.map((answer) => (
@@ -285,14 +310,18 @@ export default function Home() {
       )}
 
       {!foundQuestion && ocrText && !loading && (
-        <div style={{
-          backgroundColor: '#f8d7da',
-          border: '1px solid #f5c6cb',
-          borderRadius: '8px',
-          padding: '20px',
-          margin: '20px 0'
-        }}>
-          <p style={{ margin: 0, color: '#721c24' }}>❌ No matching question found in database.</p>
+        <div
+          style={{
+            backgroundColor: '#f8d7da',
+            border: '1px solid #f5c6cb',
+            borderRadius: '8px',
+            padding: '20px',
+            margin: '20px 0',
+          }}
+        >
+          <p style={{ margin: 0, color: '#721c24' }}>
+            ❌ No matching question found in database.
+          </p>
         </div>
       )}
     </main>
