@@ -157,22 +157,27 @@ export default function Home() {
   return (
     <main
       style={{
-        padding: '20px',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '10px',
         maxWidth: '600px',
         margin: '0 auto',
         textAlign: 'center',
+        overflow: 'hidden'
       }}
     >
       <h1
         style={{
-          fontSize: '24px',
-          marginBottom: '20px',
+          fontSize: '20px',
+          margin: '10px 0',
           color: '#333',
+          flexShrink: 0
         }}
       >
         Photo OCR Scanner
       </h1>
-      <div className="camera-section">
+      <div style={{ flex: '0 0 auto', marginBottom: '10px' }}>
         {!capturedPhoto ? (
           <video
             ref={videoRef}
@@ -234,13 +239,13 @@ export default function Home() {
       </div>
 
       <div
-        className="controls"
         style={{
           display: 'flex',
           gap: '10px',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          margin: '20px 0',
+          margin: '10px 0',
+          flexShrink: 0
         }}
       >
         {!capturedPhoto ? (
@@ -326,81 +331,84 @@ export default function Home() {
         )}
       </div>
 
-      {ocrText && (
-        <div
-          style={{
-            backgroundColor: '#f8f9fa',
-            border: '1px solid #dee2e6',
-            borderRadius: '8px',
-            padding: '20px',
-            margin: '20px 0',
-            textAlign: 'left',
-          }}
-        >
-          <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>
-            Detected Text
-          </h3>
-          <p
+      <div style={{ flex: '1 1 auto', overflow: 'auto', minHeight: 0 }}>
+        {ocrText && (
+          <div
             style={{
-              backgroundColor: 'white',
+              backgroundColor: '#f8f9fa',
+              border: '1px solid #dee2e6',
+              borderRadius: '8px',
               padding: '15px',
-              borderRadius: '4px',
-              border: '1px solid #e9ecef',
-              margin: 0,
-              whiteSpace: 'pre-wrap',
+              margin: '10px 0',
+              textAlign: 'left',
             }}
           >
-            {ocrText}
-          </p>
-        </div>
-      )}
+            <h3 style={{ margin: '0 0 10px 0', color: '#495057', fontSize: '16px' }}>
+              Detected Text
+            </h3>
+            <p
+              style={{
+                backgroundColor: 'white',
+                padding: '10px',
+                borderRadius: '4px',
+                border: '1px solid #e9ecef',
+                margin: 0,
+                whiteSpace: 'pre-wrap',
+                fontSize: '14px'
+              }}
+            >
+              {ocrText}
+            </p>
+          </div>
+        )}
 
-      {foundQuestion && (
-        <div
-          style={{
-            backgroundColor: '#d4edda',
-            border: '1px solid #c3e6cb',
-            borderRadius: '8px',
-            padding: '20px',
-            margin: '20px 0',
-            textAlign: 'left',
-          }}
-        >
-          <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>
-            ✅ Question Found
-          </h3>
-          <p>
-            <strong>ID:</strong> {foundQuestion.id}
-          </p>
-          <p>
-            <strong>Question:</strong> {foundQuestion.questionText}
-          </p>
-          <h4 style={{ margin: '15px 0 10px 0' }}>Answers:</h4>
-          <ul style={{ margin: 0, paddingLeft: '20px' }}>
-            {foundQuestion.answers.map((answer) => (
-              <li key={answer.id} style={{ margin: '5px 0' }}>
-                {answer.text} {answer.isCorrect && '✅'}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {foundQuestion && (
+          <div
+            style={{
+              backgroundColor: '#d4edda',
+              border: '1px solid #c3e6cb',
+              borderRadius: '8px',
+              padding: '15px',
+              margin: '10px 0',
+              textAlign: 'left',
+            }}
+          >
+            <h3 style={{ margin: '0 0 10px 0', color: '#155724', fontSize: '16px' }}>
+              ✅ Question Found
+            </h3>
+            <p style={{ fontSize: '14px', margin: '5px 0' }}>
+              <strong>ID:</strong> {foundQuestion.id}
+            </p>
+            <p style={{ fontSize: '14px', margin: '5px 0' }}>
+              <strong>Question:</strong> {foundQuestion.questionText}
+            </p>
+            <h4 style={{ margin: '10px 0 5px 0', fontSize: '14px' }}>Answers:</h4>
+            <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '14px' }}>
+              {foundQuestion.answers.map((answer) => (
+                <li key={answer.id} style={{ margin: '3px 0' }}>
+                  {answer.text} {answer.isCorrect && '✅'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {!foundQuestion && ocrText && !loading && (
-        <div
-          style={{
-            backgroundColor: '#f8d7da',
-            border: '1px solid #f5c6cb',
-            borderRadius: '8px',
-            padding: '20px',
-            margin: '20px 0',
-          }}
-        >
-          <p style={{ margin: 0, color: '#721c24' }}>
-            ❌ No matching question found in database.
-          </p>
-        </div>
-      )}
+        {!foundQuestion && ocrText && !loading && (
+          <div
+            style={{
+              backgroundColor: '#f8d7da',
+              border: '1px solid #f5c6cb',
+              borderRadius: '8px',
+              padding: '15px',
+              margin: '10px 0',
+            }}
+          >
+            <p style={{ margin: 0, color: '#721c24', fontSize: '14px' }}>
+              ❌ No matching question found in database.
+            </p>
+          </div>
+        )}
+      </div>
     </main>
   );
 }
