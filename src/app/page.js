@@ -16,7 +16,7 @@ export default function Home() {
     x: 0,
     y: 0,
     width: 400,
-    height: 400,
+    height: 200,
   });
   const [isDragging, setIsDragging] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -131,7 +131,7 @@ export default function Home() {
     setCapturedPhoto(null);
     setOcrText('');
     setFoundQuestion(null);
-    setFocusArea({ x: 0, y: 0, width: 400, height: 400 });
+    setFocusArea({ x: 0, y: 0, width: 400, height: 200 });
     setShowPopup(false);
     startCamera();
   };
