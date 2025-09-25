@@ -12,6 +12,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [foundQuestion, setFoundQuestion] = useState(null);
   const [questionsData, setQuestionsData] = useState([]);
+  const [focusArea, setFocusArea] = useState({ x: 50, y: 50, width: 200, height: 100 });
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     // Fetch JSON data on component mount
@@ -74,17 +76,45 @@ export default function Home() {
     setFoundQuestion(null);
 
     try {
-      const {
-        data: { text },
-      } = await Tesseract.recognize(capturedPhoto, 'rus', {
-        logger: (m) => console.log(m),
-      });
-      setOcrText(text);
-      findQuestion(text);
+      // Create cropped image from focus area
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const scaleX = img.width / 400; // Assuming max display width is 400px
+        const scaleY = img.height / (img.height * 400 / img.width);
+        
+        canvas.width = focusArea.width * scaleX;
+        canvas.height = focusArea.height * scaleY;
+        
+        ctx.drawImage(
+          img,
+          focusArea.x * scaleX,
+          focusArea.y * scaleY,
+          focusArea.width * scaleX,
+          focusArea.height * scaleY,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        
+        const croppedImage = canvas.toDataURL('image/jpeg');
+        
+        const {
+          data: { text },
+        } = await Tesseract.recognize(croppedImage, 'rus', {
+          logger: (m) => console.log(m),
+        });
+        setOcrText(text);
+        findQuestion(text);
+        setLoading(false);
+      };
+      img.src = capturedPhoto;
     } catch (err) {
       console.error('OCR error:', err);
       setOcrText('OCR failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -93,7 +123,24 @@ export default function Home() {
     setCapturedPhoto(null);
     setOcrText('');
     setFoundQuestion(null);
+    setFocusArea({ x: 50, y: 50, width: 200, height: 100 });
     startCamera();
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - focusArea.width / 2;
+    const y = e.clientY - rect.top - focusArea.height / 2;
+    setFocusArea(prev => ({ ...prev, x: Math.max(0, Math.min(x, rect.width - prev.width)), y: Math.max(0, Math.min(y, rect.height - prev.height)) }));
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   const findQuestion = (scannedText) => {
@@ -141,17 +188,47 @@ export default function Home() {
             }}
           />
         ) : (
-          <img
-            src={capturedPhoto}
-            alt="Captured photo"
-            style={{
-              width: '100%',
-              maxWidth: '400px',
-              height: 'auto',
-              border: '2px solid #28a745',
-              borderRadius: '8px',
-            }}
-          />
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <img
+              src={capturedPhoto}
+              alt="Captured photo"
+              style={{
+                width: '100%',
+                maxWidth: '400px',
+                height: 'auto',
+                border: '2px solid #28a745',
+                borderRadius: '8px',
+              }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                left: focusArea.x,
+                top: focusArea.y,
+                width: focusArea.width,
+                height: focusArea.height,
+                border: '2px solid #007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                cursor: 'move',
+                borderRadius: '4px'
+              }}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              <div style={{
+                position: 'absolute',
+                top: '-25px',
+                left: '0',
+                backgroundColor: '#007bff',
+                color: 'white',
+                padding: '2px 6px',
+                fontSize: '12px',
+                borderRadius: '3px'
+              }}>Focus Area</div>
+            </div>
+          </div>
         )}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
