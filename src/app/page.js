@@ -7,6 +7,7 @@ export default function Home() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [ocrText, setOcrText] = useState('');
   const [loading, setLoading] = useState(false);
   const [foundQuestion, setFoundQuestion] = useState(null);
@@ -49,28 +50,33 @@ export default function Home() {
     }
   };
 
-  const captureAndRecognize = async () => {
+  const takePhoto = () => {
     if (!isStreaming || !videoRef.current) return;
-
-    setLoading(true);
-    setOcrText('Scanning...');
-    setFoundQuestion(null);
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
-    // Set canvas dimensions to match video stream
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    const image = canvas.toDataURL('image/jpeg');
+    const photoDataUrl = canvas.toDataURL('image/jpeg');
+    setCapturedPhoto(photoDataUrl);
+    stopCamera();
+  };
+
+  const processPhoto = async () => {
+    if (!capturedPhoto) return;
+
+    setLoading(true);
+    setOcrText('');
+    setFoundQuestion(null);
 
     try {
       const {
         data: { text },
-      } = await Tesseract.recognize(image, 'ru', {
+      } = await Tesseract.recognize(capturedPhoto, 'ru', {
         logger: (m) => console.log(m),
       });
       setOcrText(text);
@@ -81,6 +87,13 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const retakePhoto = () => {
+    setCapturedPhoto(null);
+    setOcrText('');
+    setFoundQuestion(null);
+    startCamera();
   };
 
   const findQuestion = (scannedText) => {
@@ -105,22 +118,35 @@ export default function Home() {
         fontSize: '24px',
         marginBottom: '20px',
         color: '#333'
-      }}>Camera OCR & JSON Search</h1>
+      }}>Photo OCR Scanner</h1>
       <div className="camera-section">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className="camera-feed"
-          style={{
-            width: '100%',
-            maxWidth: '400px',
-            height: 'auto',
-            border: '2px solid #ccc',
-            borderRadius: '8px'
-          }}
-        />
+        {!capturedPhoto ? (
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: 'auto',
+              border: '2px solid #ccc',
+              borderRadius: '8px'
+            }}
+          />
+        ) : (
+          <img
+            src={capturedPhoto}
+            alt="Captured photo"
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: 'auto',
+              border: '2px solid #28a745',
+              borderRadius: '8px'
+            }}
+          />
+        )}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
@@ -131,88 +157,144 @@ export default function Home() {
         flexWrap: 'wrap',
         margin: '20px 0'
       }}>
-        {!isStreaming ? (
-          <button 
-            onClick={startCamera}
-            style={{
-              padding: '12px 24px',
-              fontSize: '16px',
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}
-          >
-            Start Camera
-          </button>
-        ) : (
-          <>
+        {!capturedPhoto ? (
+          !isStreaming ? (
             <button 
-              onClick={stopCamera}
+              onClick={startCamera}
               style={{
                 padding: '12px 24px',
                 fontSize: '16px',
-                backgroundColor: '#dc3545',
+                backgroundColor: '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
                 cursor: 'pointer'
               }}
             >
-              Stop Camera
+              Start Camera
+            </button>
+          ) : (
+            <>
+              <button 
+                onClick={stopCamera}
+                style={{
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={takePhoto}
+                style={{
+                  padding: '12px 24px',
+                  fontSize: '16px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Take Photo
+              </button>
+            </>
+          )
+        ) : (
+          <>
+            <button 
+              onClick={retakePhoto}
+              style={{
+                padding: '12px 24px',
+                fontSize: '16px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              Retake
             </button>
             <button 
-              onClick={captureAndRecognize} 
+              onClick={processPhoto}
               disabled={loading}
               style={{
                 padding: '12px 24px',
                 fontSize: '16px',
-                backgroundColor: loading ? '#6c757d' : '#28a745',
+                backgroundColor: loading ? '#6c757d' : '#007bff',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
                 cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              {loading ? 'Scanning...' : 'Scan Photo'}
+              {loading ? 'Processing...' : 'Process Photo'}
             </button>
           </>
         )}
       </div>
 
-      <div className="results-section">
-        {ocrText && (
-          <div className="ocr-result">
-            <h2>Scanned Text</h2>
-            <p>{ocrText}</p>
-          </div>
-        )}
+      {ocrText && (
+        <div style={{
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #dee2e6',
+          borderRadius: '8px',
+          padding: '20px',
+          margin: '20px 0',
+          textAlign: 'left'
+        }}>
+          <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>Detected Text</h3>
+          <p style={{ 
+            backgroundColor: 'white',
+            padding: '15px',
+            borderRadius: '4px',
+            border: '1px solid #e9ecef',
+            margin: 0,
+            whiteSpace: 'pre-wrap'
+          }}>{ocrText}</p>
+        </div>
+      )}
 
-        {foundQuestion && (
-          <div className="found-question">
-            <h2>Found Question in JSON</h2>
-            <p>
-              <strong>ID:</strong> {foundQuestion.id}
-            </p>
-            <p>
-              <strong>Question:</strong> {foundQuestion.questionText}
-            </p>
-            <h3>Answers:</h3>
-            <ul>
-              {foundQuestion.answers.map((answer) => (
-                <li key={answer.id}>
-                  {answer.text} {answer.isCorrect && '✅'}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {foundQuestion && (
+        <div style={{
+          backgroundColor: '#d4edda',
+          border: '1px solid #c3e6cb',
+          borderRadius: '8px',
+          padding: '20px',
+          margin: '20px 0',
+          textAlign: 'left'
+        }}>
+          <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>✅ Question Found</h3>
+          <p><strong>ID:</strong> {foundQuestion.id}</p>
+          <p><strong>Question:</strong> {foundQuestion.questionText}</p>
+          <h4 style={{ margin: '15px 0 10px 0' }}>Answers:</h4>
+          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+            {foundQuestion.answers.map((answer) => (
+              <li key={answer.id} style={{ margin: '5px 0' }}>
+                {answer.text} {answer.isCorrect && '✅'}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-        {!foundQuestion && ocrText && !loading && (
-          <p className="not-found">No matching question found.</p>
-        )}
-      </div>
+      {!foundQuestion && ocrText && !loading && (
+        <div style={{
+          backgroundColor: '#f8d7da',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          padding: '20px',
+          margin: '20px 0'
+        }}>
+          <p style={{ margin: 0, color: '#721c24' }}>❌ No matching question found in database.</p>
+        </div>
+      )}
     </main>
   );
 }
