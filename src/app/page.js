@@ -135,19 +135,27 @@ export default function Home() {
     setShowPopup(false);
   };
 
-  const handleMouseDown = (e) => {
+  const handleTouchStart = (e) => {
+    e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleMouseMove = (e) => {
+  const handleTouchMove = (e) => {
     if (!isDragging) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - focusArea.width / 2;
-    const y = e.clientY - rect.top - focusArea.height / 2;
-    setFocusArea(prev => ({ ...prev, x: Math.max(0, Math.min(x, rect.width - prev.width)), y: Math.max(0, Math.min(y, rect.height - prev.height)) }));
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = e.currentTarget.parentElement.getBoundingClientRect();
+    const x = touch.clientX - rect.left - focusArea.width / 2;
+    const y = touch.clientY - rect.top - focusArea.height / 2;
+    setFocusArea(prev => ({ 
+      ...prev, 
+      x: Math.max(0, Math.min(x, rect.width - prev.width)), 
+      y: Math.max(0, Math.min(y, rect.height - prev.height)) 
+    }));
   };
 
-  const handleMouseUp = () => {
+  const handleTouchEnd = (e) => {
+    e.preventDefault();
     setIsDragging(false);
   };
 
@@ -220,15 +228,14 @@ export default function Home() {
                 top: focusArea.y,
                 width: focusArea.width,
                 height: focusArea.height,
-                border: '2px solid #007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                cursor: 'move',
-                borderRadius: '4px'
+                border: '3px solid #007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderRadius: '6px',
+                touchAction: 'none'
               }}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              onMouseLeave={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               <div style={{
                 position: 'absolute',
