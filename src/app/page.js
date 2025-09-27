@@ -180,7 +180,7 @@ export default function Home() {
   return (
     <main
       style={{
-        height: '70vh',
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         padding: '10px',
