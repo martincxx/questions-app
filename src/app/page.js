@@ -304,7 +304,7 @@ export default function Home() {
                   cursor: 'pointer',
                 }}
               >
-                Cancel
+                Отмена
               </button>
               <button
                 onClick={takePhoto}
