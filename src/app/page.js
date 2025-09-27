@@ -44,8 +44,10 @@ export default function Home() {
         setIsStreaming(true);
       }
     } catch (err) {
-      console.error('Error accessing camera:', err);
-      alert('Error: Could not access the camera. Please check permissions.');
+      console.error('Ошибка доступа к фотокамере:', err);
+      alert(
+        'Ошибка: Не удалось получить доступ к камере. Проверьте разрешения.'
+      );
     }
   };
 
@@ -120,8 +122,8 @@ export default function Home() {
       };
       img.src = capturedPhoto;
     } catch (err) {
-      console.error('OCR error:', err);
-      setOcrText('OCR failed. Please try again.');
+      console.error('Ошибка OCR:', err);
+      setOcrText('Ошибка распознавания текста. Попробуйте ещё раз.');
       setLoading(false);
       setShowPopup(true);
     }
@@ -254,7 +256,7 @@ export default function Home() {
                   borderRadius: '3px',
                 }}
               >
-                Focus Area
+                Активная область
               </div>
             </div>
           </div>
@@ -316,7 +318,7 @@ export default function Home() {
                   cursor: 'pointer',
                 }}
               >
-                Take Photo
+                Сделать фото
               </button>
             </>
           )
@@ -334,7 +336,7 @@ export default function Home() {
                 cursor: 'pointer',
               }}
             >
-              Retake
+              Повторить
             </button>
             <button
               onClick={processPhoto}
@@ -349,7 +351,7 @@ export default function Home() {
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
-              {loading ? 'Processing...' : 'Process Photo'}
+              {loading ? 'Обработка...' : 'Процесс'}
             </button>
           </>
         )}
@@ -401,7 +403,7 @@ export default function Home() {
             {ocrText && (
               <div style={{ marginBottom: '20px' }}>
                 <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>
-                  Detected Text
+                  Текст, найденный на изображении:
                 </h3>
                 <p
                   style={{
@@ -429,13 +431,13 @@ export default function Home() {
                 }}
               >
                 <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>
-                  ✅ Question Found
+                  ✅ Вопрос найден!
                 </h3>
                 <p style={{ margin: '5px 0' }}>
                   <strong>ID:</strong> {foundQuestion.id}
                 </p>
                 <p style={{ margin: '5px 0' }}>
-                  <strong>Question:</strong> {foundQuestion.questionText}
+                  <strong>Вопрос:</strong> {foundQuestion.questionText}
                 </p>
                 <h4 style={{ margin: '15px 0 10px 0' }}>Answers:</h4>
                 <ul style={{ margin: 0, paddingLeft: '20px' }}>
@@ -457,7 +459,7 @@ export default function Home() {
                   }}
                 >
                   <p style={{ margin: 0, color: '#721c24' }}>
-                    ❌ No matching question found in database.
+                    ❌ Соответствующий вопрос в базе данных не найден.
                   </p>
                 </div>
               )
