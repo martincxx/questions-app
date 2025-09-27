@@ -35,7 +35,7 @@ export default function Home() {
         video: {
           facingMode: 'environment', // Use back camera
           width: { ideal: 1920 },
-          height: { ideal: 1080 },
+          height: { ideal: 500 },
         },
       };
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -180,7 +180,7 @@ export default function Home() {
   return (
     <main
       style={{
-        height: '100vh',
+        height: '80vh',
         display: 'flex',
         flexDirection: 'column',
         padding: '10px',
