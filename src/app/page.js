@@ -198,7 +198,7 @@ export default function Home() {
           flexShrink: 0,
         }}
       >
-        Photo OCR Scanner
+        Фото OCR-сканер
       </h1>
       <div style={{ flex: '0 0 auto', marginBottom: '10px' }}>
         {!capturedPhoto ? (
@@ -256,7 +256,7 @@ export default function Home() {
                   borderRadius: '3px',
                 }}
               >
-                Активная область
+                Активная зона
               </div>
             </div>
           </div>
@@ -288,7 +288,7 @@ export default function Home() {
                 cursor: 'pointer',
               }}
             >
-              Start Camera
+              Запустить приложение
             </button>
           ) : (
             <>
