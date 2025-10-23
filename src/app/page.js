@@ -20,6 +20,7 @@ export default function Home() {
     height: 120,
   });
   const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
@@ -168,6 +169,26 @@ export default function Home() {
     setIsDragging(false);
   };
 
+  const handleResizeStart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+  };
+
+  const handleResizeMove = (e) => {
+    if (!isResizing) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = e.currentTarget.parentElement.parentElement.getBoundingClientRect();
+    const newHeight = Math.max(40, Math.min(200, touch.clientY - rect.top - focusArea.y));
+    setFocusArea((prev) => ({ ...prev, height: newHeight }));
+  };
+
+  const handleResizeEnd = (e) => {
+    e.preventDefault();
+    setIsResizing(false);
+  };
+
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
@@ -222,6 +243,12 @@ export default function Home() {
               onTouchEnd={handleTouchEnd}
             >
               <div className="focus-label">Активная зона</div>
+              <div
+                className="resize-handle"
+                onTouchStart={handleResizeStart}
+                onTouchMove={handleResizeMove}
+                onTouchEnd={handleResizeEnd}
+              ></div>
             </div>
           </div>
         )}
