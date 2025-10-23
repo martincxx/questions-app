@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
+import { cleanQuestionText } from './utils';
 
 export default function Home() {
   const videoRef = useRef(null);
@@ -115,8 +116,10 @@ export default function Home() {
         } = await Tesseract.recognize(croppedImage, 'rus', {
           logger: (m) => console.log(m),
         });
-        setOcrText(text);
-        findQuestion(text);
+
+        const cleanedText = cleanQuestionText(text);
+        textsetOcrText(cleanedText);
+        findQuestion(cleanedText);
         setLoading(false);
         setShowPopup(true);
       };
@@ -169,10 +172,12 @@ export default function Home() {
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
-      .trim()
-      .replace(/\s+/g, ' ');
+      .replace(/[^a-z0-9\s]/g, '') // Remove non-alphanumeric characters except spaces [^\w\sа-яА-ЯёЁ]
+      .replace(/[^\w\s]/g, '') // Remove special characters and punctuation
+      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .trim();
     const matched = questionsData.find((q) =>
-      normalizedText.includes(q.questionText.toLowerCase().trim())
+      normalizedText.includes(q.questionText)
     );
     setFoundQuestion(matched || null);
   };
