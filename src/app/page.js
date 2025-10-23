@@ -86,7 +86,7 @@ export default function Home() {
     setFoundQuestion(null);
 
     try {
-      // Create cropped image from focus area
+      // Create cropped image from Focus Area
       const img = new Image();
       img.onload = async () => {
         const canvas = document.createElement('canvas');
