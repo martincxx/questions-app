@@ -196,17 +196,18 @@ export default function Home() {
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
+      .replace(/[^\w\sа-яё]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
     const matched = questionsData.find((q) =>
-      normalizedText.includes(q.questionText)
+      normalizedText.includes(q.questionText.trim())
     );
     setFoundQuestion(matched || null);
   };
 
   return (
     <main className="mobile-container">
-      <h1 className="mobile-title">Фото OCR-сканер</h1>
+      <h1 className="mobile-title">Фото OCR-сканер 2</h1>
 
       <div className="camera-container">
         {!capturedPhoto ? (
