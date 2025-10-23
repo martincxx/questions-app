@@ -24,7 +24,7 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    // Fetch JSON data on component mount
+    // Fetch JSON data on component mount//
     fetch('/questions.json')
       .then((res) => res.json())
       .then((data) => setQuestionsData(data.questions))
