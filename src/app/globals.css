@@ -3,6 +3,11 @@
   --text-rgb: 0, 0, 0;
   --primary-color: #007bff;
   --danger-color: #dc3545;
+  --success-color: #28a745;
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+  --safe-area-inset-right: env(safe-area-inset-right);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -12,142 +17,320 @@
   }
 }
 
-html, body {
-  height: 100vh;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   color: rgb(var(--text-rgb));
   background: rgb(var(--background-rgb));
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
 }
 
-.container {
-  max-width: 600px;
-  width: 100%;
-  padding: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  background-color: var(--background-rgb);
+/* Mobile-first responsive design */
+.mobile-container {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile */
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  padding: max(var(--safe-area-inset-top), 10px) 
+           max(var(--safe-area-inset-right), 10px) 
+           max(var(--safe-area-inset-bottom), 10px) 
+           max(var(--safe-area-inset-left), 10px);
+  max-width: 100vw;
+  margin: 0 auto;
+  overflow-x: hidden;
 }
 
-.title {
-  font-size: 2rem;
+.mobile-title {
+  font-size: clamp(18px, 5vw, 24px);
+  margin: 0 0 15px 0;
   color: var(--primary-color);
-  margin: 0;
+  text-align: center;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
-.camera-section {
+.camera-container {
   position: relative;
   width: 100%;
-  padding-top: 75%; /* 4:3 aspect ratio */
-  background-color: #000;
-  border-radius: 8px;
-  overflow: hidden;
+  max-width: 100%;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 }
 
-.camera-feed {
+.camera-video, .camera-image {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: cover;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  background: #000;
+}
+
+.camera-image {
+  border-color: var(--success-color);
+}
+
+.focus-overlay {
   position: absolute;
+  border: 3px solid var(--primary-color);
+  background: rgba(0, 123, 255, 0.15);
+  border-radius: 8px;
+  touch-action: none;
+  cursor: move;
+  min-width: 80px;
+  min-height: 40px;
+}
+
+.focus-label {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  background: var(--primary-color);
+  color: white;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.mobile-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 15px 0;
+  flex-shrink: 0;
+}
+
+.mobile-button {
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  user-select: none;
+}
+
+.mobile-button:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:active {
+  background: #0056b3;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+}
+
+.btn-danger:hover, .btn-danger:active {
+  background: #c82333;
+}
+
+.btn-success {
+  background: var(--success-color);
+}
+
+.btn-success:hover, .btn-success:active {
+  background: #218838;
+}
+
+.mobile-popup {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hidden-canvas {
-  display: none;
-}
-
-.controls {
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
+  z-index: 1000;
+  padding: 20px;
 }
 
-button {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: var(--primary-color);
+.popup-content {
+  background: rgb(var(--background-rgb));
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
   border: none;
-  border-radius: 8px;
+  font-size: 24px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.bg-red-500 {
-  background-color: var(--danger-color);
-}
-.bg-red-500:hover {
-  background-color: #c82333;
-}
-
-.results-section {
-  text-align: left;
-}
-
-.ocr-result,
-.found-question {
-  background-color: #f9f9f9;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  color: #333;
-}
-
-.ocr-result p {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  font-family: monospace;
-}
-
-.found-question h2,
-.ocr-result h2 {
-  font-size: 1.25rem;
-  margin-top: 0;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.not-found {
   color: var(--danger-color);
-  font-weight: bold;
+  padding: 5px;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.results-content {
+  margin-top: 10px;
+}
+
+.result-section {
+  background: rgba(var(--primary-color), 0.1);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.result-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  color: var(--primary-color);
+}
+
+.result-text {
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.question-found {
+  background: rgba(var(--success-color), 0.1);
+  border-left-color: var(--success-color);
+}
+
+.question-found .result-title {
+  color: var(--success-color);
+}
+
+.question-not-found {
+  background: rgba(var(--danger-color), 0.1);
+  border-left-color: var(--danger-color);
   text-align: center;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.question-not-found .result-title {
+  color: var(--danger-color);
 }
 
-li {
-  padding: 0.25rem 0;
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* iOS specific styles */
+@supports (-webkit-touch-callout: none) {
+  .mobile-container {
+    padding-bottom: max(var(--safe-area-inset-bottom), 20px);
+  }
+  
+  .mobile-button {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* Android specific styles */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: .001dpcm) {
+  .mobile-button {
+    padding: 16px 20px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .mobile-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .camera-video, .camera-image {
+    max-height: 40vh;
+  }
+  
+  .mobile-controls {
+    margin: 10px 0;
+  }
+  
+  .mobile-button {
+    padding: 10px 16px;
+    font-size: 14px;
+    min-width: 100px;
+  }
+}
+
+/* Small screens */
+@media (max-width: 360px) {
+  .mobile-container {
+    padding: max(var(--safe-area-inset-top), 8px) 
+             max(var(--safe-area-inset-right), 8px) 
+             max(var(--safe-area-inset-bottom), 8px) 
+             max(var(--safe-area-inset-left), 8px);
+  }
+  
+  .mobile-button {
+    min-width: 100px;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
-  .ocr-result,
-  .found-question {
-    background-color: #333;
-    color: #fff;
+  .result-section {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .popup-content {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   }
 }

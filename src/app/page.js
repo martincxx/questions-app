@@ -178,146 +178,62 @@ export default function Home() {
   };
 
   return (
-    <main
-      style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '10px',
-        maxWidth: '600px',
-        margin: '0 auto',
-        textAlign: 'center',
-        overflow: 'hidden',
-      }}
-    >
-      <h1
-        style={{
-          fontSize: '20px',
-          margin: '10px 0',
-          color: '#333',
-          flexShrink: 0,
-        }}
-      >
-        Фото OCR-сканер
-      </h1>
-      <div style={{ flex: '0 0 auto', marginBottom: '10px' }}>
+    <main className="mobile-container">
+      <h1 className="mobile-title">Фото OCR-сканер</h1>
+
+      <div className="camera-container">
         {!capturedPhoto ? (
           <video
             ref={videoRef}
             autoPlay
             muted
             playsInline
-            style={{
-              width: '100%',
-              maxWidth: '400px',
-              height: 'auto',
-              border: '2px solid #ccc',
-              borderRadius: '8px',
-            }}
+            className="camera-video"
           />
         ) : (
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div
+            style={{
+              position: 'relative',
+              display: 'inline-block',
+              width: '100%',
+            }}
+          >
             <img
               src={capturedPhoto}
               alt="Captured photo"
-              style={{
-                width: '100%',
-                maxWidth: '400px',
-                height: 'auto',
-                border: '2px solid #28a745',
-                borderRadius: '8px',
-              }}
+              className="camera-image"
             />
             <div
+              className="focus-overlay"
               style={{
-                position: 'absolute',
                 left: focusArea.x,
                 top: focusArea.y,
                 width: focusArea.width,
                 height: focusArea.height,
-                border: '3px solid #007bff',
-                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                borderRadius: '6px',
-                touchAction: 'none',
               }}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-25px',
-                  left: '0',
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  padding: '2px 6px',
-                  fontSize: '12px',
-                  borderRadius: '3px',
-                }}
-              >
-                Активная зона
-              </div>
+              <div className="focus-label">Активная зона</div>
             </div>
           </div>
         )}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          gap: '10px',
-          justifyContent: 'center',
-          flexWrap: 'wrap',
-          margin: '10px 0',
-          flexShrink: 0,
-        }}
-      >
+      <div className="mobile-controls">
         {!capturedPhoto ? (
           !isStreaming ? (
-            <button
-              onClick={startCamera}
-              style={{
-                padding: '12px 24px',
-                fontSize: '16px',
-                backgroundColor: '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-              }}
-            >
+            <button onClick={startCamera} className="mobile-button btn-primary">
               Запустить приложение
             </button>
           ) : (
             <>
-              <button
-                onClick={stopCamera}
-                style={{
-                  padding: '12px 24px',
-                  fontSize: '16px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                }}
-              >
+              <button onClick={stopCamera} className="mobile-button btn-danger">
                 Отмена
               </button>
-              <button
-                onClick={takePhoto}
-                style={{
-                  padding: '12px 24px',
-                  fontSize: '16px',
-                  backgroundColor: '#28a745',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                }}
-              >
+              <button onClick={takePhoto} className="mobile-button btn-success">
                 Сделать фото
               </button>
             </>
@@ -326,31 +242,21 @@ export default function Home() {
           <>
             <button
               onClick={retakePhoto}
-              style={{
-                padding: '12px 24px',
-                fontSize: '16px',
-                backgroundColor: '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: 'pointer',
-              }}
+              className="mobile-button"
+              style={{ backgroundColor: '#6c757d' }}
             >
               Повторить
             </button>
             <button
               onClick={processPhoto}
               disabled={loading}
+              className="mobile-button btn-primary"
               style={{
-                padding: '12px 24px',
-                fontSize: '16px',
-                backgroundColor: loading ? '#6c757d' : '#007bff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
+                backgroundColor: loading ? '#ccc' : undefined,
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
+              {loading && <span className="loading-spinner"></span>}
               {loading ? 'Обработка...' : 'Процесс'}
             </button>
           </>
@@ -358,112 +264,52 @@ export default function Home() {
       </div>
 
       {showPopup && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px',
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '20px',
-              maxWidth: '90vw',
-              maxHeight: '80vh',
-              overflow: 'auto',
-              position: 'relative',
-            }}
-          >
-            <button
-              onClick={closePopup}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                background: 'none',
-                border: 'none',
-                fontSize: '24px',
-                cursor: 'pointer',
-                color: '#666',
-              }}
-            >
+        <div className="mobile-popup">
+          <div className="popup-content">
+            <button onClick={closePopup} className="popup-close">
               ×
             </button>
-
-            {ocrText && (
-              <div style={{ marginBottom: '20px' }}>
-                <h3 style={{ margin: '0 0 15px 0', color: '#495057' }}>
-                  Текст, найденный на изображении:
-                </h3>
-                <p
-                  style={{
-                    backgroundColor: '#f8f9fa',
-                    padding: '15px',
-                    borderRadius: '8px',
-                    border: '1px solid #dee2e6',
-                    margin: 0,
-                    whiteSpace: 'pre-wrap',
-                    fontSize: '14px',
-                  }}
-                >
-                  {ocrText}
-                </p>
-              </div>
-            )}
-
-            {foundQuestion ? (
-              <div
-                style={{
-                  backgroundColor: '#d4edda',
-                  border: '1px solid #c3e6cb',
-                  borderRadius: '8px',
-                  padding: '15px',
-                }}
-              >
-                <h3 style={{ margin: '0 0 15px 0', color: '#155724' }}>
-                  ✅ Вопрос найден!
-                </h3>
-                <p style={{ margin: '5px 0' }}>
-                  <strong>ID:</strong> {foundQuestion.id}
-                </p>
-                <p style={{ margin: '5px 0' }}>
-                  <strong>Вопрос:</strong> {foundQuestion.questionText}
-                </p>
-                <h4 style={{ margin: '15px 0 10px 0' }}>Answers:</h4>
-                <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                  {foundQuestion.answers.map((answer) => (
-                    <li key={answer.id} style={{ margin: '5px 0' }}>
-                      {answer.text} {answer.isCorrect && '✅'}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              ocrText && (
-                <div
-                  style={{
-                    backgroundColor: '#f8d7da',
-                    border: '1px solid #f5c6cb',
-                    borderRadius: '8px',
-                    padding: '15px',
-                  }}
-                >
-                  <p style={{ margin: 0, color: '#721c24' }}>
-                    ❌ Соответствующий вопрос в базе данных не найден.
-                  </p>
+            <div className="results-content">
+              {ocrText && (
+                <div className="result-section">
+                  <h3 className="result-title">
+                    Текст, найденный на изображении:
+                  </h3>
+                  <p className="result-text">{ocrText}</p>
                 </div>
-              )
-            )}
+              )}
+              {foundQuestion ? (
+                <div className="result-section question-found">
+                  <h3 className="result-title">✅ Вопрос найден!</h3>
+                  <p className="result-text" style={{ marginBottom: '5px' }}>
+                    <strong>ID:</strong> {foundQuestion.id}
+                  </p>
+                  <p className="result-text" style={{ marginBottom: '10px' }}>
+                    <strong>Вопрос:</strong> {foundQuestion.questionText}
+                  </p>
+                  <h4 style={{ margin: '10px 0 5px 0', fontSize: '14px' }}>
+                    Answers:
+                  </h4>
+                  <ul
+                    style={{ margin: 0, paddingLeft: '20px', fontSize: '14px' }}
+                  >
+                    {foundQuestion.answers.map((answer) => (
+                      <li key={answer.id} style={{ margin: '3px 0' }}>
+                        {answer.text} {answer.isCorrect && '✅'}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                ocrText && (
+                  <div className="result-section question-not-found">
+                    <h3 className="result-title">
+                      ❌ Соответствующий вопрос в базе данных не найден.
+                    </h3>
+                  </div>
+                )
+              )}
+            </div>
           </div>
         </div>
       )}
