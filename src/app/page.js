@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import Tesseract from 'tesseract.js';
 
 export default function Home() {
@@ -116,7 +117,7 @@ export default function Home() {
           logger: (m) => console.log(m),
         });
 
-        textsetOcrText(text);
+        setOcrText(text);
         findQuestion(text);
         setLoading(false);
         setShowPopup(true);
@@ -170,7 +171,7 @@ export default function Home() {
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
-      .replace(/[^\w\sа-яА-ЯёЁ]/g, '')
+      .replace(/[^\w\sа-яё]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
     const matched = questionsData.find((q) =>
@@ -200,10 +201,13 @@ export default function Home() {
               width: '100%',
             }}
           >
-            <img
+            <Image
               src={capturedPhoto}
               alt="Captured photo"
               className="camera-image"
+              width={400}
+              height={300}
+              unoptimized
             />
             <div
               className="focus-overlay"
