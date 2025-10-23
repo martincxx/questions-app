@@ -170,9 +170,7 @@ export default function Home() {
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '') // Remove non-alphanumeric characters except spaces [^\w\sа-яА-ЯёЁ]
-      .replace(/[^\w\s]/g, '') // Remove special characters and punctuation
-      .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+      .replace(/\s+/g, ' ')
       .trim();
     const matched = questionsData.find((q) =>
       normalizedText.includes(q.questionText)
