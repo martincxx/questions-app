@@ -179,8 +179,12 @@ export default function Home() {
     if (!isResizing) return;
     e.preventDefault();
     const touch = e.touches[0];
-    const rect = e.currentTarget.parentElement.parentElement.getBoundingClientRect();
-    const newHeight = Math.max(40, Math.min(200, touch.clientY - rect.top - focusArea.y));
+    const rect =
+      e.currentTarget.parentElement.parentElement.getBoundingClientRect();
+    const newHeight = Math.max(
+      40,
+      Math.min(200, touch.clientY - rect.top - focusArea.y)
+    );
     setFocusArea((prev) => ({ ...prev, height: newHeight }));
   };
 
@@ -192,7 +196,6 @@ export default function Home() {
   const findQuestion = (scannedText) => {
     const normalizedText = scannedText
       .toLowerCase()
-      .replace(/[^\w\sа-яё]/g, '')
       .replace(/\s+/g, ' ')
       .trim();
     const matched = questionsData.find((q) =>
