@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
-import { cleanQuestionText } from './utils';
 
 export default function Home() {
   const videoRef = useRef(null);
@@ -117,9 +116,8 @@ export default function Home() {
           logger: (m) => console.log(m),
         });
 
-        const cleanedText = cleanQuestionText(text);
-        textsetOcrText(cleanedText);
-        findQuestion(cleanedText);
+        textsetOcrText(text);
+        findQuestion(text);
         setLoading(false);
         setShowPopup(true);
       };
