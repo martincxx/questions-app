@@ -170,6 +170,7 @@ export default function Home() {
     const normalizedText = scannedText
       .toLowerCase()
       .trim()
+      .replace(/[^\w\sа-яА-ЯёЁ]/g, ' ')
       .replace(/\s+/g, ' ');
     const matched = questionsData.find((q) =>
       normalizedText.includes(q.questionText.toLowerCase().trim())
