@@ -182,7 +182,7 @@ export default function Home() {
     <main
       style={{
         height: '100vh',
-        display: 'flex',
+        display: 'block',
         flexDirection: 'column',
         padding: '10px',
         maxWidth: '600px',
