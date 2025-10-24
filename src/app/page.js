@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
-import { Image } from 'next/image';
+
 export default function Home() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -218,12 +218,9 @@ export default function Home() {
           />
         ) : (
           <div style={{ position: 'relative', display: 'inline-block' }}>
-            <Image
+            <img
               src={capturedPhoto}
               alt="Captured photo"
-              width={400}
-              height={300}
-              unoptimized
               style={{
                 width: '100%',
                 maxWidth: '400px',
