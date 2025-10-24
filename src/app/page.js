@@ -181,7 +181,7 @@ export default function Home() {
   return (
     <main
       style={{
-        height: '70vh',
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         padding: '10px',
@@ -211,7 +211,7 @@ export default function Home() {
             style={{
               width: '100%',
               maxWidth: '400px',
-              height: 'auto',
+              height: '70%',
               border: '2px solid #ccc',
               borderRadius: '8px',
             }}
