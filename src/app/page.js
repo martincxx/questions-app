@@ -198,7 +198,7 @@ export default function Home() {
           flexShrink: 0,
         }}
       >
-        Фото OCR-сканер - версия 0.0.1 (старые вопросы)
+        Фото OCR-сканер - версия 0.0.1 [старые вопросы]
       </h1>
       <div style={{ flex: '0 0 auto', marginBottom: '10px' }}>
         {!capturedPhoto ? (
